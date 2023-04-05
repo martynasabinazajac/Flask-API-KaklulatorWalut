@@ -6,15 +6,16 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css')}}">
     </head>
     <body>
-        <h1 >Kalkulator_walut_przeliczenie na PLN</h1>
+        <h1>Kalkulator_walut_przeliczenie na PLN</h1>
         <form action="" method="POST">
             <label for="waluta">wybierz walutę</label>
-            <select name="waluta" id="waluta">
+            <select name="waluta" id="waluta" method="POST" class="selectpicker form-control">
                 {% for items in items %}
-                <option value='code'>{{items}}</option>
+                <option value="{{items}}">{{items}}</option>
                 {% endfor %}
             </select>
             <input name="kwota" id="kwota" type="text">
             <input type="submit">
+        </form>
     </body>
 </html>
