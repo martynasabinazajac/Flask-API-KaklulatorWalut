@@ -5,47 +5,49 @@ import json
 import requests
 import csv
 
-response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
-data = response.json()
+
+def DATA():
+    response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
+    data = response.json()
+    return data
 
 
-#utworzenie pliku csv
+# utworzenie pliku csv
 def plikcsv():
-    with open("plikzdanymi.csv", 'w') as csvfile:
-        fieldnames=['currency', 'code', 'bid', 'ask']
-        writer=csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
+    with open("plikzdanymi.csv", "w") as csvfile:
+        fieldnames = ["currency", "code", "bid", "ask"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=";")
         writer.writeheader()
-        for i in data[0]['rates']:
+        for i in data[0]["rates"]:
             writer.writerow(i)
 
 
-#kalkulator
+# kalkulator
 app = Flask(__name__)
 
+
 def slownik():
-    rates=data[0]['rates']
-    rates2={i['code']:i['bid'] for i in rates}
+    rates = data[0]["rates"]
+    rates2 = {i["code"]: i["bid"] for i in rates}
     return rates2
 
 
-
-@app.route("/kalkulator", methods=['GET', 'POST'])
+@app.route("/kalkulator", methods=["GET", "POST"])
 def calculator():
-    rates3=slownik()
-    if request.method=='GET':
-        items=rates3.keys()
-        return render_template("kalkulator.html", items=items)
-    elif request.method == 'POST':
-        items=rates3.keys()
-        waluta=request.form.get("waluta")
-        kwota=float(request.form['kwota'])
-        waluta2=rates3[waluta]
-        wynik= kwota * waluta2
-        print(wynik)
-        return render_template("kalkulator.html", wynik=wynik, items=items)
+    rates3 = slownik()
+    items = rates3.keys()
+    if request.method == "POST":
+        waluta = request.form.get("waluta")
+        kwota = float(request.form["kwota"])
+        waluta2 = rates3[waluta]
+        wynik = kwota * waluta2
+        return render_template("kalkulator.html", wynik=wynik)
+    return render_template("kalkulator.html", items=items)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    data = DATA()
     plikcsv()
+    response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
+    data = response.json()
     app.run(debug=True)
