@@ -26,15 +26,13 @@ def slownik(data):
 
 @app.route("/kalkulator", methods=["GET", "POST"])
 def calculator():
-    rates3=slownik(data)
+    wynik=None
     items = rates3.keys()
-    wynik=[]
     if request.method == "POST":
         waluta = request.form.get("waluta")
         kwota = float(request.form["kwota"])
         waluta2 = rates3[waluta]
-        wynik1 = kwota * waluta2
-        wynik.append(wynik1)
+        wynik = kwota * waluta2
     return render_template("kalkulator.html", items=items, wynik=wynik)
 
 
@@ -42,4 +40,7 @@ if __name__ == "__main__":
     response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
     data = response.json()
     plikcsv(data)
+    slownik(data)
+    rates3=slownik(data)
     app.run(debug=True)
+
