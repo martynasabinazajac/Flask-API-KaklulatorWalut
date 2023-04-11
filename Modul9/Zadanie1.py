@@ -7,28 +7,29 @@ import csv
 
 app = Flask(__name__)
 
+
+def POBRANIE_DANYCH():
+    response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
+    data = response.json()
+    return data
+
 # utworzenie pliku csv
-def plikcsv(data):
+def plikcsv(pobrane):
     with open("plikzdanymi.csv", "w") as csvfile:
         fieldnames = ["currency", "code", "bid", "ask"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=";")
         writer.writeheader()
-        for i in data[0]["rates"]:
+        for i in pobrane[0]["rates"]:
             writer.writerow(i)
 
 
 # kalkulator
-def slownik(data):
-    rates = data[0]["rates"]
-    rates2 = {i["code"]: i["bid"] for i in rates}
-    return rates2
-
-
 @app.route("/kalkulator", methods=["GET", "POST"])
 def calculator():
-    response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
-    data = response.json()
-    rates3=slownik(data)
+    POBRANIE_DANYCH()
+    dane=POBRANIE_DANYCH()
+    rates = dane[0]["rates"]
+    rates3 = {i["code"]: i["bid"] for i in rates}
     wynik=""
     items = rates3.keys()
     if request.method == "POST":
@@ -40,8 +41,8 @@ def calculator():
 
 
 if __name__ == "__main__":
-    response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
-    data = response.json()
-    plikcsv(data)
+    POBRANIE_DANYCH()
+    pobrane = POBRANIE_DANYCH()
+    plikcsv(pobrane)
     app.run(debug=True)
 
