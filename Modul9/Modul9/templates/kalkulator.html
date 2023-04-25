@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="utf-8">
+        <title>Kalkulator_walut</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet.css')}}">
+    </head>
+    <body>
+        <h1>Kalkulator_walut_przeliczenie na PLN</h1>
+        <form action="" method="POST">
+            <label for="waluta">wybierz walutę</label>
+            <select name="waluta" id="waluta" method="POST" class="selectpicker form-control">
+                {% for items in items %}
+                <option value="{{items}}">{{items}}</option>
+                {% endfor %}
+            </select>
+            <input name="kwota" id="kwota" type="text">
+            <input type="submit">
+        </form>
+        <h2>Wynik poniżej:</h2>
+            <p>{{wynik}}</p>
+    </body>
+</html>
