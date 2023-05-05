@@ -9,7 +9,7 @@
         <h1>Kalkulator_walut_przeliczenie na PLN</h1>
         <form action="" method="POST">
             <label for="waluta">wybierz walutę</label>
-            <select name="waluta" id="waluta" method="POST" class="selectpicker form-control">
+            <select name="waluta" id="waluta" method="POST" class="selectpicker form-control" >
                 {% for items in items %}
                 <option value="{{items}}">{{items}}</option>
                 {% endfor %}
@@ -18,6 +18,8 @@
             <input type="submit">
         </form>
         <h2>Wynik poniżej:</h2>
-            <p>{{wynik}}</p>
+            <p>Wybrana waluta:{{waluta}}
+            <p>Wprowadzona kwota: {{kwota}}
+            <p>Po przeliczeniu wartosc wynosi:{{wynik}}</p>
     </body>
 </html>

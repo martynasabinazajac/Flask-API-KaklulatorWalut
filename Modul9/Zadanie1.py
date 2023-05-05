@@ -8,10 +8,11 @@ import csv
 app = Flask(__name__)
 
 
-def POBRANIE_DANYCH():
+def pobieranie_danych():
     response = requests.get("http://api.nbp.pl/api/exchangerates/tables/C?format=json")
     data = response.json()
     return data
+
 
 # utworzenie pliku csv
 def plikcsv(pobrane):
@@ -26,23 +27,22 @@ def plikcsv(pobrane):
 # kalkulator
 @app.route("/kalkulator", methods=["GET", "POST"])
 def calculator():
-    POBRANIE_DANYCH()
-    dane=POBRANIE_DANYCH()
+    dane = pobieranie_danych()
     rates = dane[0]["rates"]
     rates3 = {i["code"]: i["bid"] for i in rates}
-    wynik=""
+    wynik = ""
+    waluta=""
+    kwota=""
     items = rates3.keys()
     if request.method == "POST":
         waluta = request.form.get("waluta")
         kwota = float(request.form["kwota"])
         waluta2 = rates3[waluta]
         wynik = kwota * waluta2
-    return render_template("kalkulator.html", items=items, wynik=wynik)
+    return render_template("kalkulator.html", items=items, wynik=wynik, waluta=waluta, kwota=kwota)
 
 
 if __name__ == "__main__":
-    POBRANIE_DANYCH()
-    pobrane = POBRANIE_DANYCH()
+    pobrane = pobieranie_danych()
     plikcsv(pobrane)
     app.run(debug=True)
-
